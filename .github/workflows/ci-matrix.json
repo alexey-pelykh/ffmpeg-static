@@ -1,0 +1,5 @@
+{
+  "include": [
+    { "target": { "platform": "linux", "archs": "linux/amd64,linux/arm64/v8" } }
+  ]
+}
