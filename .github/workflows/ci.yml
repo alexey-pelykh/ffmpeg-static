@@ -1,0 +1,1222 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  BUILD_TAG: ${{ github.event.number > 0 && format('pr{0}', github.event.number) || github.ref_name }}
+
+jobs:
+
+  configuration:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.value }}
+      build-tag: ${{ steps.build-tag.outputs.value }}
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+      - id: matrix
+        name: Matrix
+        run: |
+          CONFIGURATION_VALUE=$(cat ".github/workflows/ci-matrix.json" | tr -d '[:space:]')
+          echo "value=${CONFIGURATION_VALUE}" >> $GITHUB_OUTPUT
+      - id: build-tag
+        name: Build Tag
+        run: |
+          CONFIGURATION_VALUE=${{ env.BUILD_TAG }}
+          echo "value=${CONFIGURATION_VALUE}" >> $GITHUB_OUTPUT
+
+  builder:
+    needs:
+      - configuration
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-builder.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+
+  libaom:
+    needs:
+      - configuration
+      - builder
+      - libjpeg-turbo
+      - libvmaf
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libaom
+
+  libaribb24:
+    needs:
+      - configuration
+      - builder
+      - libpng
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libaribb24
+
+  libass:
+    needs:
+      - configuration
+      - builder
+      - libfreetype2
+      - libfribidi
+      - libharfbuzz
+      - libfontconfig
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libass
+
+  libavisynth:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libavisynth
+
+  libbluray:
+    needs:
+      - configuration
+      - builder
+      - libxml2
+      - libfreetype2
+      - libfontconfig
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libbluray
+
+  libbz2:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libbz2
+
+  libdav1d:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libdav1d
+
+  libdavs2:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libdavs2
+
+  libdc1394:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libdc1394
+
+  libexpat:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libexpat
+
+  libfdk-aac:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libfdk-aac
+
+  libfftw:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libfftw
+
+  libfontconfig:
+    needs:
+      - configuration
+      - builder
+      - libfreetype2
+      - libexpat
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libfontconfig
+
+  libfreetype2:
+    needs:
+      - configuration
+      - builder
+      - libz
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libfreetype2
+
+  libfribidi:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libfribidi
+
+  libgif:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libgif
+
+  libgme:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libgme
+
+  libgraphite2:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libgraphite2
+
+  libgsm:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libgsm
+
+  libharfbuzz:
+    needs:
+      - configuration
+      - builder
+      - libgraphite2
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libharfbuzz
+
+  libjpeg-turbo:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libjpeg-turbo
+
+  libkvazaar:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libkvazaar
+
+  liblzma:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: liblzma
+
+  libmodplug:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libmodplug
+
+  libmp3lame:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libmp3lame
+
+  libmysofa:
+    needs:
+      - configuration
+      - builder
+      - libz
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libmysofa
+
+  libogg:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libogg
+
+  libopencore-amr:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libopencore-amr
+
+  libopenh264:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libopenh264
+
+  libopenjpeg:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libopenjpeg
+
+  libopenssl:
+    needs:
+      - configuration
+      - builder
+      - libz
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libopenssl
+
+  libopus:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libopus
+
+  libpng:
+    needs:
+      - configuration
+      - builder
+      - libz
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libpng
+
+  libpython:
+    needs:
+      - configuration
+      - builder
+      - libexpat
+      - libopenssl
+      - libbz2
+      - liblzma
+      - libz
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libpython
+
+  librabbitmq:
+    needs:
+      - configuration
+      - builder
+      - libopenssl
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: librabbitmq
+
+  librav1e:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: librav1e
+
+  librtmp:
+    needs:
+      - configuration
+      - builder
+      - libopenssl
+      - libz
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: librtmp
+
+  librubberband:
+    needs:
+      - configuration
+      - builder
+      - libfftw
+      - libsamplerate
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: librubberband
+
+  libsamplerate:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libsamplerate
+
+  libshine:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libshine
+
+  libsnappy:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libsnappy
+
+  libsoxr:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libsoxr
+
+  libspeex:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libspeex
+
+  libsrt:
+    needs:
+      - configuration
+      - builder
+      - libopenssl
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libsrt
+
+  libssh:
+    needs:
+      - configuration
+      - builder
+      - libopenssl
+      - libz
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libssh
+
+  libsvtav1:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libsvtav1
+
+  libtheora:
+    needs:
+      - configuration
+      - builder
+      - libogg
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libtheora
+
+  libtiff:
+    needs:
+      - configuration
+      - builder
+      - libjpeg-turbo
+      - libz
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libtiff
+
+  libtwolame:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libtwolame
+
+  libuavs3d:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libuavs3d
+
+  libvapoursynth:
+    needs:
+      - configuration
+      - builder
+      - libpython
+      - libzimg
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libvapoursynth
+
+  libvidstab:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libvidstab
+
+  libvmaf:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libvmaf
+
+  libvo-amrwbenc:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libvo-amrwbenc
+
+  libvorbis:
+    needs:
+      - configuration
+      - builder
+      - libogg
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libvorbis
+
+  libvpx:
+    needs:
+      - configuration
+      - builder
+      - libjpeg-turbo
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libvpx
+
+  libwebp:
+    needs:
+      - configuration
+      - builder
+      - libgif
+      - libjpeg-turbo
+      - libpng
+      - libtiff
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libwebp
+
+  libx264:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libx264
+
+  libx265:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libx265
+
+  libxavs2:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libxavs2
+
+  libxml2:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libxml2
+
+  libxvidcore:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libxvidcore
+
+  libz:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libz
+
+  libzimg:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libzimg
+
+  libzmq:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libzmq
+
+  libzvbi:
+    needs:
+      - configuration
+      - builder
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-dependency.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+      # dependency: ${{ github.job }}
+      dependency: libzvbi
+
+  ffmpeg:
+    needs:
+      - configuration
+      - builder
+      - libaom
+      - libaribb24
+      - libass
+      - libavisynth
+      - libbluray
+      - libbz2
+      - libdav1d
+      - libdavs2
+      - libdc1394
+      - libfdk-aac
+      - libfreetype2
+      - libfribidi
+      - libgme
+      - libgsm
+      - libkvazaar
+      - liblzma
+      - libmodplug
+      - libmp3lame
+      - libmysofa
+      - libopencore-amr
+      - libopenh264
+      - libopenjpeg
+      - libopus
+      - librabbitmq
+      - librav1e
+      - librtmp
+      - librubberband
+      - libshine
+      - libsnappy
+      - libsoxr
+      - libspeex
+      - libsrt
+      - libssh
+      - libsvtav1
+      - libtheora
+      - libtwolame
+      - libuavs3d
+      - libvapoursynth
+      - libvidstab
+      - libvmaf
+      - libvo-amrwbenc
+      - libvorbis
+      - libvpx
+      - libwebp
+      - libx264
+      - libx265
+      - libxavs2
+      - libxvidcore
+      - libzimg
+      - libzmq
+      - libzvbi
+      - libopenssl
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-ffmpeg.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
+
+  binaries:
+    needs:
+      - configuration
+      - ffmpeg
+    strategy:
+      matrix: ${{ fromJSON(needs.configuration.outputs.matrix) }}
+    permissions:
+      packages: write
+    uses: ./.github/workflows/build-binaries.yml
+    with:
+      build-tag: ${{ needs.configuration.outputs.build-tag }}
+      target-platform: ${{ matrix.target.platform }}
+      target-archs: ${{ matrix.target.archs }}
